@@ -1,4 +1,6 @@
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 from copy import deepcopy
 
@@ -21,7 +23,7 @@ board = tf.placeholder("float", [4, 4])
 x_p1 = tf.cast(tf.equal(board, -1), "float")
 x_p2 = tf.cast(tf.equal(board, 1), "float")
 x_empty = tf.cast(tf.equal(board, 0), "float")
-x = tf.reshape(tf.concat(0,[x_p1, x_p2, x_empty]), [1, n_input])
+x = tf.reshape(tf.concat(0, [x_p1, x_p2, x_empty]), [1, n_input])
 rating = tf.placeholder("float", [4])
 y = tf.reshape(rating, [1, n_classes])
 
@@ -29,7 +31,7 @@ y = tf.reshape(rating, [1, n_classes])
 def multilayer_network(x, weights, biases):
     # Hidden layer with sigmoid activation
     layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
-    layer_1 = tf.sigmoid(layer_1) # tan hyperbolique ?
+    layer_1 = tf.sigmoid(layer_1)  # tan hyperbolique ?
     # Hidden layer with sigmoid activation
     layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
     layer_2 = tf.sigmoid(layer_2)
@@ -43,6 +45,7 @@ def multilayer_network(x, weights, biases):
     out_layer = tf.matmul(layer_4, weights['out']) + biases['out']
     out_layer = tf.nn.softmax(out_layer)
     return out_layer
+
 
 # Store layers weight & bias
 weights = {
@@ -77,7 +80,6 @@ saver = tf.train.Saver()
 
 
 class NeuralNetwork:
-
     def __init__(self, player):
         self.session = tf.Session()
         self.session.run(tf.initialize_all_variables())
